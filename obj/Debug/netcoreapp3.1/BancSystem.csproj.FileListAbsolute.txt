@@ -1,0 +1,12 @@
+D:\Степапка\DEX\DexPractice\BancSystem\BancSystem\bin\Debug\netcoreapp3.1\BancSystem.exe
+D:\Степапка\DEX\DexPractice\BancSystem\BancSystem\bin\Debug\netcoreapp3.1\BancSystem.deps.json
+D:\Степапка\DEX\DexPractice\BancSystem\BancSystem\bin\Debug\netcoreapp3.1\BancSystem.runtimeconfig.json
+D:\Степапка\DEX\DexPractice\BancSystem\BancSystem\bin\Debug\netcoreapp3.1\BancSystem.runtimeconfig.dev.json
+D:\Степапка\DEX\DexPractice\BancSystem\BancSystem\bin\Debug\netcoreapp3.1\BancSystem.dll
+D:\Степапка\DEX\DexPractice\BancSystem\BancSystem\bin\Debug\netcoreapp3.1\BancSystem.pdb
+D:\Степапка\DEX\DexPractice\BancSystem\BancSystem\obj\Debug\netcoreapp3.1\BancSystem.csprojAssemblyReference.cache
+D:\Степапка\DEX\DexPractice\BancSystem\BancSystem\obj\Debug\netcoreapp3.1\BancSystem.AssemblyInfoInputs.cache
+D:\Степапка\DEX\DexPractice\BancSystem\BancSystem\obj\Debug\netcoreapp3.1\BancSystem.AssemblyInfo.cs
+D:\Степапка\DEX\DexPractice\BancSystem\BancSystem\obj\Debug\netcoreapp3.1\BancSystem.dll
+D:\Степапка\DEX\DexPractice\BancSystem\BancSystem\obj\Debug\netcoreapp3.1\BancSystem.pdb
+D:\Степапка\DEX\DexPractice\BancSystem\BancSystem\obj\Debug\netcoreapp3.1\BancSystem.genruntimeconfig.cache
