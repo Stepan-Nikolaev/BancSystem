@@ -7,8 +7,8 @@ namespace BancSystem.Service
 {
     public class Exchange : IExchange
     {
-        public double ConverterCurrency(int countMoney, CurrencyType firstCurrency, CurrencyType secondCurrency)
-        {
+        public double ConverterCurrency<T>(int countMoney, T firstCurrency, T secondCurrency) where T : CurrencyType
+        { 
             return (countMoney * firstCurrency.PriceCurrency) / secondCurrency.PriceCurrency;
         }
     }

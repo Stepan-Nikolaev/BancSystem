@@ -7,6 +7,6 @@ namespace BancSystem.Service
 {
     public interface IExchange
     {
-        public double ConverterCurrency(int countMoney, CurrencyType firstCurrency, CurrencyType secondCurrency);
+        public double ConverterCurrency<T>(int countMoney, T firstCurrency, T secondCurrency) where T : CurrencyType;
     }
 }
