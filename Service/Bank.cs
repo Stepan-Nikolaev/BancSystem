@@ -11,10 +11,10 @@ namespace BancSystem.Service
 {
     public class Bank
     {
-        public static string PathFileBankSystem = Path.Combine("D:", "Степапка", "DEX", "DexPractice", "BancSystem", "DataBaseBank");
-        public static string DataClients = Path.Combine("D:", "Степапка", "DEX", "DexPractice", "BancSystem", "DataBaseBank", "ClientsDataBase.txt");
-        public static string DataEmployees = Path.Combine("D:", "Степапка", "DEX", "DexPractice", "BancSystem", "DataBaseBank", "EmployeesDataBase.txt");
-        public static string ClientsDictionary = Path.Combine("D:", "Степапка", "DEX", "DexPractice", "BancSystem", "DataBaseBank", "ClientsDictionary.txt");
+        public static string PathFileBankSystem = Path.Combine("D:", "Степапка", "DEX", "DexPractice", "BancSystem", "BancSystem", "DataBaseBank");
+        public static string DataClients = Path.Combine("D:", "Степапка", "DEX", "DexPractice", "BancSystem", "BancSystem", "DataBaseBank", "ClientsDataBase.txt");
+        public static string DataEmployees = Path.Combine("D:", "Степапка", "DEX", "DexPractice", "BancSystem", "BancSystem", "DataBaseBank", "EmployeesDataBase.txt");
+        public static string ClientsDictionary = Path.Combine("D:", "Степапка", "DEX", "DexPractice", "BancSystem", "BancSystem", "DataBaseBank", "ClientsDictionary.txt");
         public List<Client> Clients = new List<Client>();
         public List<Employee> Employees = new List<Employee>();
         public Dictionary<Client, List<Accaunt>> DataBaseClients = new Dictionary<Client, List<Accaunt>>();
