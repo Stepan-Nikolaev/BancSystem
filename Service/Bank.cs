@@ -1,6 +1,7 @@
 ﻿using BancSystem.Currencies;
 using BancSystem.Exceptions;
 using BancSystem.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,7 +18,7 @@ namespace BancSystem.Service
         public static string ClientsDictionary = Path.Combine("D:", "Степапка", "DEX", "DexPractice", "BancSystem", "BancSystem", "DataBaseBank", "ClientsDictionary.txt");
         public List<Client> Clients = new List<Client>();
         public List<Employee> Employees = new List<Employee>();
-        public Dictionary<Client, List<Accaunt>> DataBaseClients = new Dictionary<Client, List<Accaunt>>();
+        public Dictionary<int, List<Accaunt>> DataBaseClients = new Dictionary<int, List<Accaunt>>();
         public Func<int, CurrencyType, CurrencyType, double> ExchangeFunc;
         public DirectoryInfo directoryInfo = new DirectoryInfo(PathFileBankSystem);
         public DirectoryInfo clientsDirectoryInfo = new DirectoryInfo(DataClients);
@@ -30,46 +31,14 @@ namespace BancSystem.Service
                 directoryInfo.Create();
             }
 
-            try
+            if (GetClientListFromFile() != null)
             {
-                using (FileStream fileStream = new FileStream(DataClients, FileMode.Open))
-                {
-                    byte[] array = new byte[fileStream.Length];
-                    fileStream.Read(array, 0, array.Length);
-                    string readTextDataClients = System.Text.Encoding.Default.GetString(array);
-                    string[] newClient = readTextDataClients.Split("@", StringSplitOptions.RemoveEmptyEntries);
-
-                    for (int i = 0; i < (newClient.Length); i++)
-                    {
-                        Client lockalClient = new Client() { Name = newClient[i++], Surname = newClient[i++], Patronymic = newClient[i++], Age = Convert.ToInt32(newClient[i++]), PassportID = Convert.ToInt32(newClient[i]) };
-                        Clients.Add(lockalClient);
-                    }
-                }
-            }
-            catch (FileNotFoundException)
-            {
-                Console.WriteLine("Вы будете первым клиентом.");
+                Clients = GetClientListFromFile();
             }
 
-            try
+            if (GetEmployeeListFromFile() != null)
             {
-                using (FileStream fileStream = new FileStream(DataEmployees, FileMode.Open))
-                {
-                    byte[] array = new byte[fileStream.Length];
-                    fileStream.Read(array, 0, array.Length);
-                    string readTextDataEmployees = System.Text.Encoding.Default.GetString(array);
-                    string[] newEmploy = readTextDataEmployees.Split("@");
-
-                    for (int i = 0; i < (newEmploy.Length); i++)
-                    {
-                        Employee lockalEmploy = new Employee() { Name = newEmploy[i++], Surname = newEmploy[i++], Patronymic = newEmploy[i++], Age = Convert.ToInt32(newEmploy[i++]), PassportID = Convert.ToInt32(newEmploy[i++]), Position = newEmploy[i++], WorkExperience = Convert.ToInt32(newEmploy[i]) };
-                        Employees.Add(lockalEmploy);
-                    }
-                }
-            }
-            catch (FileNotFoundException)
-            {
-                Console.WriteLine("Вы будете первым сотрудником.");
+                Employees = GetEmployeeListFromFile();
             }
 
             if (GetClientsDictionaryFromFile() != null)
@@ -99,9 +68,9 @@ namespace BancSystem.Service
                     else
                     {
                         Clients.Add(lokalClient);
-                        string textDataLokalClient = ($"@{lokalClient.Name}@{lokalClient.Surname}@{lokalClient.Patronymic}@{lokalClient.Age}@{lokalClient.PassportID}");
+                        string textDataLokalClient = JsonConvert.SerializeObject(Clients);
 
-                        using (FileStream fileStream = new FileStream(DataClients, FileMode.Append))
+                        using (FileStream fileStream = new FileStream(DataClients, FileMode.Create))
                         {
                             byte[] array = System.Text.Encoding.Default.GetBytes(textDataLokalClient);
                             fileStream.Write(array, 0, array.Length);
@@ -122,9 +91,9 @@ namespace BancSystem.Service
                     else
                     {
                         Employees.Add(lokalEmploy);
-                        string textDataLokalEmploy = ($"@{lokalEmploy.Name}@{lokalEmploy.Surname}@{lokalEmploy.Patronymic}@{lokalEmploy.Age}@{lokalEmploy.PassportID}@{lokalEmploy.Position}@{lokalEmploy.WorkExperience}");
+                        string textDataLokalEmploy = JsonConvert.SerializeObject(Employees);
 
-                        using (FileStream fileStream = new FileStream(DataEmployees, FileMode.Append))
+                        using (FileStream fileStream = new FileStream(DataEmployees, FileMode.Create))
                         {
                             byte[] array = System.Text.Encoding.Default.GetBytes(textDataLokalEmploy);
                             fileStream.Write(array, 0, array.Length);
@@ -183,14 +152,14 @@ namespace BancSystem.Service
                         throw new AgeLimitException("Вы не можете стать нашим клиентом т.к. вам меньше 18 лет");
                     }
 
-                    if (DataBaseClients.ContainsKey(newClient))
+                    if (DataBaseClients.ContainsKey(newClient.PassportID))
                     {
-                        DataBaseClients[newClient].Add(newAccaunt);
+                        DataBaseClients[newClient.PassportID].Add(newAccaunt);
                     }
                     else
                     {
                         List<Accaunt> localListAccaunt = new List<Accaunt>() { newAccaunt };
-                        DataBaseClients.Add(newClient, localListAccaunt);
+                        DataBaseClients.Add(newClient.PassportID, localListAccaunt);
                     }
                 }
                 catch (AgeLimitException e)
@@ -233,83 +202,29 @@ namespace BancSystem.Service
             }
         }
 
-        public void TransferDictionaryInFile(Dictionary<Client, List<Accaunt>> dataBaseClients)
+        public void TransferDictionaryInFile(Dictionary<int, List<Accaunt>> dataBaseClients)
         {
-            foreach (var clientAccaunts in dataBaseClients)
+            string dictionaryText = JsonConvert.SerializeObject(dataBaseClients);
+
+            using (FileStream fileStream = new FileStream(ClientsDictionary, FileMode.Append))
             {
-                string dataLokalClientText = ($"*@{clientAccaunts.Key.Name}@{clientAccaunts.Key.Surname}@{clientAccaunts.Key.Patronymic}@{clientAccaunts.Key.Age}@{clientAccaunts.Key.PassportID}");
-                string accauntsText = "";
-
-                foreach (var accaunt in clientAccaunts.Value)
-                {
-                    accauntsText += $"*@{accaunt.CountMoney}@{accaunt.CurrentCurrency.NameCurrency}";
-                }
-
-                string clientAccauntsText = $"!{dataLokalClientText}{accauntsText}";
-
-                using (FileStream fileStream = new FileStream(ClientsDictionary, FileMode.Append))
-                {
-                    byte[] array = System.Text.Encoding.Default.GetBytes(clientAccauntsText);
-                    fileStream.Write(array, 0, array.Length);
-                }
+                byte[] array = System.Text.Encoding.Default.GetBytes(dictionaryText);
+                fileStream.Write(array, 0, array.Length);
             }
         }
 
-        public Dictionary<Client, List<Accaunt>> GetClientsDictionaryFromFile()
+        public Dictionary<int, List<Accaunt>> GetClientsDictionaryFromFile()
         {
             try
             {
-                Dictionary<Client, List<Accaunt>> lockalDataBaseClients = new Dictionary<Client, List<Accaunt>>();
+                Dictionary<int, List<Accaunt>> lockalDataBaseClients = new Dictionary<int, List<Accaunt>>();
 
                 using (FileStream fileStream = new FileStream(ClientsDictionary, FileMode.Open))
                 {
                     byte[] array = new byte[fileStream.Length];
                     fileStream.Read(array, 0, array.Length);
                     string readClientsDictionary = System.Text.Encoding.Default.GetString(array);
-                    string[] newClientAccauntsArray = readClientsDictionary.Split("!", StringSplitOptions.RemoveEmptyEntries);
-
-                    foreach (var clientAccaunts in newClientAccauntsArray)
-                    {
-                        string[] clientOrAccaunt = clientAccaunts.Split("*", StringSplitOptions.RemoveEmptyEntries);
-
-                        Client lockalClient = new Client();
-                        List<Accaunt> lockalAccauntsList = new List<Accaunt>();
-
-                        for (int i = 0; i < clientOrAccaunt.Length; i++)
-                        {
-
-                            if (i == 0)
-                            {
-                                string[] client = clientOrAccaunt[i].Split("@", StringSplitOptions.RemoveEmptyEntries);
-
-                                lockalClient = new Client() { Name = client[0], Surname = client[1], Patronymic = client[2], Age = Convert.ToInt32(client[3]), PassportID = Convert.ToInt32(client[4]) };
-
-                            }
-                            else
-                            {
-                                string[] accaunt = clientOrAccaunt[i].Split("@", StringSplitOptions.RemoveEmptyEntries);
-
-                                CurrencyType localCurrency = new Euro();
-
-                                switch (accaunt[1])
-                                {
-                                    case "Евро":
-                                        localCurrency = new Euro();
-                                        break;
-                                    case "Гривна":
-                                        localCurrency = new Hryvnia();
-                                        break;
-                                    case "Рубль":
-                                        localCurrency = new Ruble();
-                                        break;
-                                }
-
-                                lockalAccauntsList.Add(new Accaunt() { CountMoney = Convert.ToInt32(accaunt[0]), CurrentCurrency = localCurrency });
-                            }
-                        }
-
-                        lockalDataBaseClients.Add(lockalClient, lockalAccauntsList);
-                    }
+                    lockalDataBaseClients = JsonConvert.DeserializeObject<Dictionary<int, List<Accaunt>>>(readClientsDictionary);
                 }
 
                 return lockalDataBaseClients;
@@ -317,6 +232,54 @@ namespace BancSystem.Service
             catch (FileNotFoundException)
             {
                 Console.WriteLine("Файла библиотеки не существует.");
+                return null;
+            }
+        }
+
+        private List<Client> GetClientListFromFile()
+        {
+            try
+            {
+                List<Client> clients = new List<Client>();
+
+                using (FileStream fileStream = new FileStream(DataClients, FileMode.Open))
+                {
+                    byte[] array = new byte[fileStream.Length];
+                    fileStream.Read(array, 0, array.Length);
+                    string readTextDataClients = System.Text.Encoding.Default.GetString(array);
+                    clients = JsonConvert.DeserializeObject<List<Client>>(readTextDataClients);
+                }
+
+                return clients;
+            }
+            catch (FileNotFoundException)
+            {
+                Console.WriteLine("Вы будете первым клиентом.");
+
+                return null;
+            }
+        }
+
+        private List<Employee> GetEmployeeListFromFile()
+        {
+            try
+            {
+                List<Employee> employees = new List<Employee>();
+
+                using (FileStream fileStream = new FileStream(DataEmployees, FileMode.Open))
+                {
+                    byte[] array = new byte[fileStream.Length];
+                    fileStream.Read(array, 0, array.Length);
+                    string readTextDataEmployees = System.Text.Encoding.Default.GetString(array);
+                    employees = JsonConvert.DeserializeObject<List<Employee>>(readTextDataEmployees);
+                }
+
+                return employees;
+            }
+            catch (FileNotFoundException)
+            {
+                Console.WriteLine("Вы будете первым сотрудником.");
+
                 return null;
             }
         }

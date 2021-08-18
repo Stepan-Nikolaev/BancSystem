@@ -10,3 +10,5 @@ D:\Степапка\DEX\DexPractice\BancSystem\BancSystem\obj\Debug\netcoreapp3.
 D:\Степапка\DEX\DexPractice\BancSystem\BancSystem\obj\Debug\netcoreapp3.1\BancSystem.dll
 D:\Степапка\DEX\DexPractice\BancSystem\BancSystem\obj\Debug\netcoreapp3.1\BancSystem.pdb
 D:\Степапка\DEX\DexPractice\BancSystem\BancSystem\obj\Debug\netcoreapp3.1\BancSystem.genruntimeconfig.cache
+D:\Степапка\DEX\DexPractice\BancSystem\BancSystem\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
+D:\Степапка\DEX\DexPractice\BancSystem\BancSystem\obj\Debug\netcoreapp3.1\BancSystem.csproj.CopyComplete

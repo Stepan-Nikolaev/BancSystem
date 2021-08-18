@@ -1,4 +1,5 @@
 ﻿using BancSystem.Currencies;
+using Newtonsoft.Json;
 using BancSystem.Generators;
 using BancSystem.Models;
 using BancSystem.Service;
@@ -14,7 +15,7 @@ namespace BancSystem
             Bank bank = new Bank();
             List<Client> clients = new List<Client>();
             List<Employee> employees = new List<Employee>();
-            Dictionary<Client, List<Accaunt>> dataBaseClients = new Dictionary<Client, List<Accaunt>>();
+            Dictionary<int, List<Accaunt>> dataBaseClients = new Dictionary<int, List<Accaunt>>();
             Generator generator = new Generator();
 
             dataBaseClients = generator.GetGeneratedDictionary(100);
@@ -36,7 +37,7 @@ namespace BancSystem
                 bank.TransferDictionaryInFile(dataBaseClients);
             }
 
-            Dictionary<Client, List<Accaunt>> newDataBaseClients = bank.GetClientsDictionaryFromFile();
+            Dictionary<int, List<Accaunt>> newDataBaseClients = bank.GetClientsDictionaryFromFile();
         }
     }
 }
